@@ -6,18 +6,18 @@ import 'package:volunteers_management/features/communities/models/community_mode
 import 'package:volunteers_management/features/map/models/live_location_model.dart';
 
 class MemberRepository {
-  SupabaseClient? get _supabase {
-    if (SupabaseConfig.isConfigured) {
-      try {
-        return Supabase.instance.client;
-      } catch (_) {
-        return null;
-      }
-    }
-    return null;
-  }
+  final SupabaseClient? _supabase;
 
-  MemberRepository();
+  MemberRepository([SupabaseClient? supabase])
+      : _supabase = supabase ?? (SupabaseConfig.isConfigured ? _getSafeClient() : null);
+
+  static SupabaseClient? _getSafeClient() {
+    try {
+      return Supabase.instance.client;
+    } catch (_) {
+      return null;
+    }
+  }
 
   Future<List<MemberModel>> getCommunityMembers(String communityId) async {
     if (SupabaseConfig.isConfigured && _supabase != null) {

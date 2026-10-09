@@ -5,22 +5,22 @@ import 'package:volunteers_management/core/config/supabase_config.dart';
 import 'package:volunteers_management/features/communities/models/community_model.dart';
 
 class CommunityRepository {
+  final SupabaseClient? _supabase;
+
   // In-memory cache & mock fallback
   final List<CommunityModel> _mockCommunities = [];
 
-  SupabaseClient? get _supabase {
-    if (SupabaseConfig.isConfigured) {
-      try {
-        return Supabase.instance.client;
-      } catch (_) {
-        return null;
-      }
-    }
-    return null;
+  CommunityRepository([SupabaseClient? supabase])
+      : _supabase = supabase ?? (SupabaseConfig.isConfigured ? _getSafeClient() : null) {
+    _initMockData();
   }
 
-  CommunityRepository() {
-    _initMockData();
+  static SupabaseClient? _getSafeClient() {
+    try {
+      return Supabase.instance.client;
+    } catch (_) {
+      return null;
+    }
   }
 
   void _initMockData() {

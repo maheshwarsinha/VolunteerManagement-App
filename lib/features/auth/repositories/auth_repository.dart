@@ -5,18 +5,20 @@ import 'package:volunteers_management/core/config/supabase_config.dart';
 import 'package:volunteers_management/features/auth/models/user_profile.dart';
 
 class AuthRepository {
+  final SupabaseClient? _supabase;
+
   // Local mock store for instantaneous zero-config developer preview
   UserProfile? _mockCurrentUser;
 
-  SupabaseClient? get _supabase {
-    if (SupabaseConfig.isConfigured) {
-      try {
-        return Supabase.instance.client;
-      } catch (_) {
-        return null;
-      }
+  AuthRepository([SupabaseClient? supabase])
+      : _supabase = supabase ?? (SupabaseConfig.isConfigured ? _getSafeClient() : null);
+
+  static SupabaseClient? _getSafeClient() {
+    try {
+      return Supabase.instance.client;
+    } catch (_) {
+      return null;
     }
-    return null;
   }
 
   bool get isAuthenticated => _supabase?.auth.currentUser != null || _mockCurrentUser != null;

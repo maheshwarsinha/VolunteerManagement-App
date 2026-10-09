@@ -4,21 +4,20 @@ import 'package:volunteers_management/core/config/supabase_config.dart';
 import 'package:volunteers_management/features/announcements/models/announcement_model.dart';
 
 class AnnouncementRepository {
+  final SupabaseClient? _supabase;
   final List<AnnouncementModel> _mockAnnouncements = [];
 
-  SupabaseClient? get _supabase {
-    if (SupabaseConfig.isConfigured) {
-      try {
-        return Supabase.instance.client;
-      } catch (_) {
-        return null;
-      }
-    }
-    return null;
+  AnnouncementRepository([SupabaseClient? supabase])
+      : _supabase = supabase ?? (SupabaseConfig.isConfigured ? _getSafeClient() : null) {
+    _initMockAnnouncements();
   }
 
-  AnnouncementRepository() {
-    _initMockAnnouncements();
+  static SupabaseClient? _getSafeClient() {
+    try {
+      return Supabase.instance.client;
+    } catch (_) {
+      return null;
+    }
   }
 
   void _initMockAnnouncements() {

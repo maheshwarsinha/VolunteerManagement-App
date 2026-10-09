@@ -7,24 +7,23 @@ import 'package:volunteers_management/features/map/models/live_location_model.da
 import 'package:volunteers_management/features/communities/models/community_model.dart';
 
 class LocationRepository {
+  final SupabaseClient? _supabase;
   RealtimeChannel? _realtimeChannel;
   StreamController<List<LiveLocationModel>>? _locationsStreamController;
 
   // Local state cache
   final Map<String, LiveLocationModel> _cachedCommunityLocations = {};
 
-  SupabaseClient? get _supabase {
-    if (SupabaseConfig.isConfigured) {
-      try {
-        return Supabase.instance.client;
-      } catch (_) {
-        return null;
-      }
-    }
-    return null;
-  }
+  LocationRepository([SupabaseClient? supabase])
+      : _supabase = supabase ?? (SupabaseConfig.isConfigured ? _getSafeClient() : null);
 
-  LocationRepository();
+  static SupabaseClient? _getSafeClient() {
+    try {
+      return Supabase.instance.client;
+    } catch (_) {
+      return null;
+    }
+  }
 
   /// Stream of live locations for currently active community
   Stream<List<LiveLocationModel>> subscribeToLiveLocations(String communityId) {

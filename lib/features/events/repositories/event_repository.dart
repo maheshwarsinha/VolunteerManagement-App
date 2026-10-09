@@ -4,21 +4,20 @@ import 'package:volunteers_management/core/config/supabase_config.dart';
 import 'package:volunteers_management/features/events/models/event_model.dart';
 
 class EventRepository {
+  final SupabaseClient? _supabase;
   final List<EventModel> _mockEvents = [];
 
-  SupabaseClient? get _supabase {
-    if (SupabaseConfig.isConfigured) {
-      try {
-        return Supabase.instance.client;
-      } catch (_) {
-        return null;
-      }
-    }
-    return null;
+  EventRepository([SupabaseClient? supabase])
+      : _supabase = supabase ?? (SupabaseConfig.isConfigured ? _getSafeClient() : null) {
+    _initMockEvents();
   }
 
-  EventRepository() {
-    _initMockEvents();
+  static SupabaseClient? _getSafeClient() {
+    try {
+      return Supabase.instance.client;
+    } catch (_) {
+      return null;
+    }
   }
 
   void _initMockEvents() {

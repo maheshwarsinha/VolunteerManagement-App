@@ -67,16 +67,20 @@ A production-quality Flutter mobile application built for volunteer and disaster
 ## 🚀 Quick Start Guide
 
 ### 1. Database Setup (Supabase)
-1. Create a free project at [supabase.com](https://supabase.com).
-2. Open the **SQL Editor** in your Supabase dashboard.
-3. Paste the contents of [`supabase/schema.sql`](supabase/schema.sql) and run it.
-4. Note your **Project URL** and **anon public key** from `Project Settings` > `API`.
+Your project is configured with:
+- **Project URL**: `https://rdomnnaaaafdczzmwryi.supabase.co`
+- **Anon Public Key**: Active in [`lib/core/config/supabase_config.dart`](lib/core/config/supabase_config.dart)
 
-### 2. Configure Environment Variables
-You can pass your Supabase credentials during build or launch:
+Next, in your Supabase dashboard:
+1. Open the **SQL Editor** at `https://supabase.com/dashboard/project/rdomnnaaaafdczzmwryi/sql`.
+2. Paste the contents of [`supabase/schema.sql`](supabase/schema.sql) and click **Run**.
+3. Under **Authentication** > **Providers**, ensure **Email** provider is enabled with password sign-in (social providers disabled as requested).
+
+### 2. Launch the Application
+Because your credentials are now baked into [`lib/core/config/supabase_config.dart`](lib/core/config/supabase_config.dart), you can run directly without flags:
 
 ```bash
-flutter run --dart-define=SUPABASE_URL=https://your-project.supabase.co --dart-define=SUPABASE_ANON_KEY=your_anon_key
+flutter run
 ```
 
 *Note: The application includes instant mock fallbacks, allowing you to run, explore, and test the full application and simulated responders out of the box even before configuring cloud keys!*
